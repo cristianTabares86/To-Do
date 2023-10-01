@@ -1,0 +1,29 @@
+
+
+.addSection {
+    padding: 10px;
+}
+
+.inputTodo {
+    width: 450px;
+    /* padding: 10px; */
+    border-radius: 0%;
+}
+
+.addButton {
+    height: 58px;
+    border-radius: 0%;
+    /* padding: 10px; */
+}
+
+.listTodoSection {
+    padding: 20px;
+}
+
+#InputGroup button {
+    border-radius: 0%;
+}
+
+.todoInputGroup {
+    border-radius: 0%;
+}
