@@ -12,12 +12,12 @@ import { getTodosApi, updateListTodos } from '../../redux/todosActions';
 import { useSelector, useDispatch } from 'react-redux';
 
 export const ToDoView = () => {
-  //let enumInitialTodo = 0;
+  let enumInitialTodo = 0;
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getTodosApi());
   }, [dispatch]);
-  console.log("estoy aqui antes del lamado al store")
+  //console.log("estoy aqui antes del lamado al store")
   let allTodos = useSelector((state) => state.todosState.allTodos);
 
   console.log(allTodos);
@@ -26,15 +26,17 @@ export const ToDoView = () => {
 
   const handleAddTodo = () => {
     if (newTodo.trim() !== '') {
+
+      const maxId = allTodos.reduce((max, todo) => (todo.id > max ? todo.id : max), 0);
       const newTodoItem = {
-        id: allTodos.length + 1,
+        id: maxId + 1,
         todo: newTodo,
       };
-      console.log("nuevo todo")
-      console.log(newTodoItem)
+      //console.log("nuevo todo")
+      //console.log(newTodoItem)
       const updatedTodos = [...allTodos, newTodoItem];
-      console.log("actualizados")
-      console.log(updatedTodos)
+      // console.log("actualizados")
+      // console.log(updatedTodos)
       dispatch(updateListTodos(updatedTodos));
 
       setNewTodo('');
@@ -42,23 +44,24 @@ export const ToDoView = () => {
   };
 
   const handleDeleteTodo = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     const deleteTodo = allTodos.filter(t => t.id !== parseInt(e.target.value));
-    console.log(deleteTodo);
-    
-    const updatedTodosWithNewIds = deleteTodo.map((todo, index) => {
-      return {
-        ...todo,
-        id: index + 1, // Puedes asignar nuevos IDs como prefieras
-      };
+    dispatch(updateListTodos(deleteTodo));
+  }
+
+  const handleEditTodo = (todoId, todoValue) => {
+    console.log(typeof todoId);
+    const editTodos = allTodos.map((todo) => {
+      if (todo.id === todoId) {
+        console.log("compare y si es igual")
+        return { ...todo, todo: todoValue };
+      }
+      console.log(todo)
+      return todo;
     });
-
-    console.log("Este es con nuevo id")
-    console.log(updatedTodosWithNewIds)
-
-    dispatch(updateListTodos(updatedTodosWithNewIds));
-    
-       
+    console.log("no esta depachando  el editor")
+    console.log(editTodos)
+    dispatch(updateListTodos(editTodos));
   }
 
   return (
@@ -89,7 +92,7 @@ export const ToDoView = () => {
               <Container key={e.id}>
                 <Row>
                   <Col md={1}>
-                    <Form.Label>{'#' + (e.id)}</Form.Label>
+                    <Form.Label>{'#' + (enumInitialTodo = enumInitialTodo +1)}</Form.Label>
                   </Col>
                   <Col md={11}>
                     <InputGroup>
@@ -97,9 +100,10 @@ export const ToDoView = () => {
                       <Form.Control
                         defaultValue={e.todo}
                         aria-label="Recipient's username with two button addons"
+                        name={e.id}
                       />
                       <Button value={e.id} variant="outline-secondary" onClick={(e) => handleDeleteTodo(e)}>Delete</Button>
-                      <Button variant="outline-secondary">Edit</Button>
+                      <Button value={e.todo} variant="outline-secondary" onClick={() => handleEditTodo(e.id, "camilo")}>Edit</Button>
                     </InputGroup>
                   </Col>
 
